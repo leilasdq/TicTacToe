@@ -20,8 +20,9 @@ import kotlin.random.Random
  */
 class BoardFragment : Fragment() {
 
-    private val boardCells = Array(3){ arrayOfNulls <ImageView> (3)}
+    private val boardCells = Array(3) { arrayOfNulls<ImageView>(3) }
     private var board = Board()
+    private var thisView: View? = null
 
     companion object { //Initialize statics
         fun newInstance(): BoardFragment {
@@ -39,19 +40,22 @@ class BoardFragment : Fragment() {
         // Inflate the layout for this fragment
         var view = inflater.inflate(R.layout.fragment_board, container, false)
 
+        thisView = view
+
         loadBoard(view)
         view.restart_btn?.setOnClickListener(View.OnClickListener {
             board = Board()
+            thisView!!.winner_text.text = ""
             mapBoards()
         })
 
         return view
     }
 
-    private fun mapBoards(){
-        for (i in board.board.indices){
-            for (j in board.board.indices){
-                when(board.board[i][j]){
+    private fun mapBoards() {
+        for (i in board.board.indices) {
+            for (j in board.board.indices) {
+                when (board.board[i][j]) {
                     /* 3 possibility:
                     1. player choose a cell
                     2. computer choose a cell
@@ -74,8 +78,8 @@ class BoardFragment : Fragment() {
     }
 
     private fun loadBoard(view: View) {
-        for (i in boardCells.indices){
-            for (j in boardCells.indices){
+        for (i in boardCells.indices) {
+            for (j in boardCells.indices) {
                 boardCells[i][j] = ImageView(context)
                 boardCells[i][j]?.layoutParams = GridLayout.LayoutParams().apply {
                     rowSpec = GridLayout.spec(i)
@@ -87,24 +91,45 @@ class BoardFragment : Fragment() {
                     leftMargin = 5
                     rightMargin = 5
                 }
-                boardCells[i][j]?.setBackgroundColor(ContextCompat.getColor(context!!.applicationContext, R.color.colorPrimary))
+                boardCells[i][j]?.setBackgroundColor(
+                    ContextCompat.getColor(
+                        context!!.applicationContext,
+                        R.color.colorPrimary
+                    )
+                )
                 boardCells[i][j]?.setOnClickListener(OnCellClick(i, j))
                 view.board.addView(boardCells[i][j])
             }
         }
     }
 
-    inner class OnCellClick(var i:Int, var j:Int) : View.OnClickListener {
+    inner class OnCellClick(var i: Int, var j: Int) : View.OnClickListener {
         override fun onClick(v: View?) {
-            val cell = Cell(i, j)
-            board.moveOfPlayer(cell, Board.PLAYER) // it is always player bcz computer will play automatically
+            if (!board.isGameOver) {
+                val cell = Cell(i, j)
+                board.moveOfPlayer(
+                    cell,
+                    Board.PLAYER
+                ) // it is always player bcz computer will play automatically
 
-            if (board.availableCells.isNotEmpty()) {
-                val available = board.availableCells[Random.nextInt(0, board.availableCells.size)]
-                board.moveOfPlayer(available, Board.COMPUTER)
+                if (board.availableCells.isNotEmpty()) {
+                    val available =
+                        board.availableCells[Random.nextInt(0, board.availableCells.size)]
+                    board.moveOfPlayer(available, Board.COMPUTER)
+                }
+                mapBoards()
             }
-
-            mapBoards()
+            when {
+                board.hasComputerWon() -> {
+                    thisView?.winner_text?.text = getString(R.string.computer_winning_txt)
+                }
+                board.hasPlayerWon() -> {
+                    thisView?.winner_text?.text = getString(R.string.player_winning_txt)
+                }
+                board.isGameOver -> {
+                    thisView?.winner_text?.text = getString(R.string.tie_game_txt)
+                }
+            }
         }
 
     }
