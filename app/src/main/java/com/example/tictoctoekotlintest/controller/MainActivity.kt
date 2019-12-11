@@ -2,7 +2,6 @@ package com.example.tictoctoekotlintest.controller
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import com.example.tictoctoekotlintest.BoardFragment
 import com.example.tictoctoekotlintest.R
 
 class MainActivity : AppCompatActivity() {
