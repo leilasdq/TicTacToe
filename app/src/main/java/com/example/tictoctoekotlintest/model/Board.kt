@@ -85,4 +85,54 @@ class Board {
 
     val isGameOver: Boolean
         get() = hasComputerWon() || hasPlayerWon() || availableCells.isEmpty()
+
+
+    //in this var we will store the computersMove
+    var computersMove: Cell? = null
+    //this is our minimax function to calculate
+    //the best move for the computer
+    fun minimax(depth: Int, player: String): Int {
+        if (hasComputerWon()) return +1
+        if (hasPlayerWon()) return -1
+
+        if (availableCells.isEmpty()) return 0
+
+        var min = Integer.MAX_VALUE
+        var max = Integer.MIN_VALUE
+
+        for (i in availableCells.indices) {
+            val cell = availableCells[i]
+            if (player == COMPUTER) {
+                moveOfPlayer(cell, COMPUTER)
+                val currentScore = minimax(depth + 1, PLAYER)
+                max = Math.max(currentScore, max)
+
+                if (currentScore >= 0) {
+                    if (depth == 0) computersMove = cell
+                }
+
+                if (currentScore == 1) {
+                    board[cell.i][cell.j] = ""
+                    break
+                }
+
+                if (i == availableCells.size - 1 && max < 0) {
+                    if (depth == 0) computersMove = cell
+                }
+
+            } else if (player == PLAYER) {
+                moveOfPlayer(cell, PLAYER)
+                val currentScore = minimax(depth + 1, COMPUTER)
+                min = Math.min(currentScore, min)
+
+                if (min == -1) {
+                    board[cell.i][cell.j] = ""
+                    break
+                }
+            }
+            board[cell.i][cell.j] = ""
+        }
+
+        return if (player == COMPUTER) max else min
+    }
 }

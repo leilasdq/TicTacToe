@@ -112,11 +112,11 @@ class BoardFragment : Fragment() {
                     Board.PLAYER
                 ) // it is always player bcz computer will play automatically
 
-                if (board.availableCells.isNotEmpty()) {
-                    val available =
-                        board.availableCells[Random.nextInt(0, board.availableCells.size)]
-                    board.moveOfPlayer(available, Board.COMPUTER)
+                board.minimax(0, Board.COMPUTER)
+                board.computersMove?.let {
+                    board.moveOfPlayer(it, Board.COMPUTER)
                 }
+
                 mapBoards()
             }
             when {
