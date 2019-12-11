@@ -13,6 +13,7 @@ import com.example.tictoctoekotlintest.R
 import com.example.tictoctoekotlintest.model.Board
 import com.example.tictoctoekotlintest.model.Cell
 import kotlinx.android.synthetic.main.fragment_board.view.*
+import kotlin.random.Random
 
 /**
  * A simple [Fragment] subclass.
@@ -97,6 +98,12 @@ class BoardFragment : Fragment() {
         override fun onClick(v: View?) {
             val cell = Cell(i, j)
             board.moveOfPlayer(cell, Board.PLAYER) // it is always player bcz computer will play automatically
+
+            if (board.availableCells.isNotEmpty()) {
+                val available = board.availableCells[Random.nextInt(0, board.availableCells.size)]
+                board.moveOfPlayer(available, Board.COMPUTER)
+            }
+
             mapBoards()
         }
 
