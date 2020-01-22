@@ -10,6 +10,6 @@ This is a TicTacToe game using minimax algorythm.
 # Description
 - This is a mini TicTacToa game.
 - You can play with system. User will play as **O** and system as **X**.
-- System will using a simple AI algorithm named *minimax*.
+- System is using a simple AI algorithm named *minimax*.
 - MiniMax will make a tree and choose best move from available cells in game after user make his move.
 - This algorithm make system unbetable.
